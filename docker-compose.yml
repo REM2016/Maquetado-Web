@@ -1,0 +1,36 @@
+version: '3'
+services:
+  app1:
+    build: .
+    ports:
+      - "4000:4000"
+    environment:
+      - JWT_SECRET=supersecreto123
+      - PORT=4000
+
+  app2:
+    build: .
+    ports:
+      - "4001:4001"
+    environment:
+      - JWT_SECRET=supersecreto123
+      - PORT=4001
+
+  app3:
+    build: .
+    ports:
+      - "4002:4002"
+    environment:
+      - JWT_SECRET=supersecreto123
+      - PORT=4002
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"  # NGINX escuchará en el puerto 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Mapear correctamente el archivo nginx.conf
+    depends_on:
+      - app1
+      - app2
+      - app3

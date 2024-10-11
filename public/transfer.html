@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transferencia Bancaria</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h2>Realizar Transferencia Bancaria</h2>
+
+    <form id="transfer-form">
+        <label>Monto a Transferir:</label>
+        <input type="text" name="monto" id="monto" required><br>
+
+        <label>Cuenta de Destino:</label>
+        <input type="text" name="cuentaDestino" id="cuentaDestino" required><br>
+
+        <label>Ingrese OTP:</label>
+        <input type="text" name="otp" id="otp" required><br> <!-- Campo para el OTP -->
+
+        <button type="submit">Transferir</button>
+    </form>
+
+    <script>
+        document.getElementById('transfer-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
+
+            const monto = document.getElementById('monto').value;
+            const cuentaDestino = document.getElementById('cuentaDestino').value;
+            const otp = document.getElementById('otp').value; // Obtiene el OTP ingresado por el usuario
+
+            const token = localStorage.getItem('token'); // Almacena el JWT en el Local Storage después de hacer login
+
+            fetch('/transferir', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Agrega el token JWT en el encabezado
+                },
+                body: JSON.stringify({
+                    monto: monto,
+                    cuentaDestino: cuentaDestino,
+                    otp: otp, // Enviar OTP al backend
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Transferencia realizada con éxito.');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al realizar la transferencia.');
+                });
+
+        });
+    </script>
+</body>
+
+</html>
