@@ -2,65 +2,70 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transferencia Bancaria</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres, UTF-8 es el estándar común -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que el sitio sea responsive, adaptándose a diferentes dispositivos -->
+    <title>Transferencia Bancaria</title> <!-- Título de la página web -->
+    <link rel="stylesheet" href="styles.css"> <!-- Vincula el archivo de estilos externo -->
 </head>
 
 <body>
-    <h2>Realizar Transferencia Bancaria</h2>
+    <h2>Realizar Transferencia Bancaria</h2> <!-- Encabezado principal de la página -->
 
-    <form id="transfer-form">
+    <form id="transfer-form"> <!-- Formulario para realizar la transferencia bancaria -->
         <label>Monto a Transferir:</label>
-        <input type="text" name="monto" id="monto" required><br>
+        <input type="text" name="monto" id="monto" required><br> <!-- Campo para ingresar el monto a transferir -->
 
         <label>Cuenta de Destino:</label>
-        <input type="text" name="cuentaDestino" id="cuentaDestino" required><br>
+        <input type="text" name="cuentaDestino" id="cuentaDestino" required><br> <!-- Campo para ingresar el número de cuenta de destino -->
 
         <label>Ingrese OTP:</label>
-        <input type="text" name="otp" id="otp" required><br> <!-- Campo para el OTP -->
+        <input type="text" name="otp" id="otp" required><br> <!-- Campo para ingresar el OTP (One Time Password) para seguridad -->
 
-        <button type="submit">Transferir</button>
+        <button type="submit">Transferir</button> <!-- Botón para realizar la transferencia -->
     </form>
 
     <script>
+        // Captura el evento 'submit' del formulario cuando el usuario intenta enviar los datos.
         document.getElementById('transfer-form').addEventListener('submit', function (event) {
-            event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
+            event.preventDefault(); // Previene que el formulario se envíe de manera tradicional y recargue la página.
 
-            const monto = document.getElementById('monto').value;//detecta el monto para transferri 
-            const cuentaDestino = document.getElementById('cuentaDestino').value;//propietario a la cual se le transfiere 
-            const otp = document.getElementById('otp').value; // Obtiene el OTP ingresado por el usuario
+            // Obtiene los valores ingresados en los campos del formulario.
+            const monto = document.getElementById('monto').value; // Obtiene el monto de la transferencia
+            const cuentaDestino = document.getElementById('cuentaDestino').value; // Obtiene la cuenta de destino a la cual se va a transferir
+            const otp = document.getElementById('otp').value; // Obtiene el OTP que ingresó el usuario
 
-            const token = localStorage.getItem('token'); // Almacena el JWT en el Local Storage después de hacer login
-              //hace el llamado la metodo post de app.js en transferir 
+            const token = localStorage.getItem('token'); // Recupera el token JWT que está almacenado en el localStorage. Este token fue guardado después del inicio de sesión del usuario.
+
+            // Realiza una petición POST al backend (ruta /transferir) para procesar la transferencia.
             fetch('/transferir', {
-                method: 'POST',
+                method: 'POST', // Especifica que se va a enviar una solicitud de tipo POST.
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Agrega el token JWT en el encabezado
+                    'Content-Type': 'application/json', // Define que el contenido enviado es en formato JSON.
+                    'Authorization': `Bearer ${token}` // Incluye el token JWT en el encabezado de la solicitud para autenticación.
                 },
+                // Los datos del formulario (monto, cuenta de destino, OTP) son convertidos a JSON y enviados en el cuerpo de la solicitud.
                 body: JSON.stringify({
                     monto: monto,
                     cuentaDestino: cuentaDestino,
                     otp: otp, // Enviar OTP al backend
                 })
             })
-            //mensaje de que se podo realizar la tranzaccion 
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Transferencia realizada con éxito.');
-                    } else {
-                        alert('Error: ' + data.message);
-                    }
-                })
-                //mensaje de que no se pudo realizar la transaccion 
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert('Hubo un error al realizar la transferencia.');
-                });
-
+            // Maneja la respuesta del backend.
+            .then(response => response.json()) // Convierte la respuesta a formato JSON.
+            .then(data => {
+                // Si el backend devuelve éxito, muestra un mensaje de éxito.
+                if (data.success) {
+                    alert('Transferencia realizada con éxito.');
+                } else {
+                    // Si hubo un error, muestra el mensaje de error devuelto por el backend.
+                    alert('Error: ' + data.message);
+                }
+            })
+            // Si ocurre algún error durante la solicitud (por ejemplo, falla de red), lo captura aquí.
+            .catch((error) => {
+                console.error('Error:', error); // Muestra el error en la consola del navegador.
+                alert('Hubo un error al realizar la transferencia.'); // Muestra una alerta indicando que ocurrió un error.
+            });
         });
     </script>
 </body>

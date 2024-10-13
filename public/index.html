@@ -1,50 +1,52 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es"> 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Proyecto Distribuido</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8 para soportar una amplia gama de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la página sea responsive para dispositivos móviles -->
+    <title>Login - Proyecto Distribuido</title> <!-- Título de la página que aparece en la pestaña del navegador -->
+    <link rel="stylesheet" href="styles.css"> <!-- Vincula el archivo CSS externo para aplicar estilos personalizados -->
 </head>
 <body>
-    <div class="container">
-        <h2>Iniciar Sesión</h2>
-        <form id="loginForm">
-            <label for="username">Usuario:</label>
-            <input type="text" id="username" name="username" required>
+    <div class="container"> <!-- Contenedor principal para centrar y dar estilo al formulario -->
+        <h2>Iniciar Sesión</h2> <!-- Encabezado del formulario de inicio de sesión -->
+        <form id="loginForm"> <!-- Formulario de inicio de sesión -->
+            <label for="username">Usuario:</label> <!-- Etiqueta para el campo del nombre de usuario -->
+            <input type="text" id="username" name="username" required> <!-- Campo de texto para el nombre de usuario, es requerido -->
 
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" required>
+            <label for="password">Contraseña:</label> <!-- Etiqueta para el campo de la contraseña -->
+            <input type="password" id="password" name="password" required> <!-- Campo de contraseña, es requerido -->
 
-            <button type="submit">Iniciar Sesión</button>
+            <button type="submit">Iniciar Sesión</button> <!-- Botón para enviar el formulario -->
         </form>
-        <p id="loginMessage"></p>
+        <p id="loginMessage"></p> <!-- Párrafo para mostrar mensajes de éxito o error después del intento de inicio de sesión -->
     </div>
 
     <script>
-        const form = document.getElementById('loginForm');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+        const form = document.getElementById('loginForm'); // Obtiene el formulario por su ID
+        form.addEventListener('submit', async (e) => { // Agrega un evento 'submit' al formulario
+            e.preventDefault(); // Previene que el formulario se envíe de manera tradicional (recargando la página)
+            const username = document.getElementById('username').value; // Obtiene el valor del campo 'username'
+            const password = document.getElementById('password').value; // Obtiene el valor del campo 'password'
             
+            // Realiza una solicitud POST al servidor para iniciar sesión
             const response = await fetch('/login', {
-                method: 'POST',
+                method: 'POST', // Método POST para enviar los datos
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json' // Define que el contenido es JSON
                 },
+                // Convierte el nombre de usuario y contraseña en formato JSON
                 body: JSON.stringify({ username, password })
             });
 
-            const data = await response.json();
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
-                document.getElementById('loginMessage').textContent = 'Inicio de sesión exitoso. Redirigiendo...';
-                setTimeout(() => {
+            const data = await response.json(); // Convierte la respuesta del servidor en JSON
+            if (response.ok) { // Si la respuesta es exitosa (código 200)
+                localStorage.setItem('token', data.token); // Almacena el token JWT en el localStorage
+                document.getElementById('loginMessage').textContent = 'Inicio de sesión exitoso. Redirigiendo...'; // Muestra mensaje de éxito
+                setTimeout(() => { // Después de 1.5 segundos redirige al usuario a la página de transferencia
                     window.location.href = 'transfer.html';
                 }, 1500);
             } else {
-                document.getElementById('loginMessage').textContent = 'Credenciales incorrectas';
+                document.getElementById('loginMessage').textContent = 'Credenciales incorrectas'; // Muestra mensaje de error si las credenciales son incorrectas
             }
         });
     </script>

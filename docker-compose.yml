@@ -1,36 +1,41 @@
-version: '3'
-services:
+version: '3'  # Especifica la versión del formato de Docker Compose que se está utilizando.
+services:  # Define los servicios que se van a levantar.
+  
+  # Primer servicio: app1
   app1:
-    build: .
+    build: .  # Instruye a Docker que construya la imagen desde el Dockerfile en el directorio actual.
     ports:
-      - "4000:4000"
-    environment:
-      - JWT_SECRET=supersecreto123
-      - PORT=4000
+      - "4000:4000"  # Mapea el puerto 4000 del contenedor al puerto 4000 del host.
+    environment:  # Variables de entorno que se pasan al contenedor.
+      - JWT_SECRET=supersecreto123  # Define una clave secreta (usada por ejemplo para autenticación con JWT).
+      - PORT=4000  # Define en qué puerto interno correrá la aplicación dentro del contenedor (4000).
 
+  # Segundo servicio: app2
   app2:
-    build: .
+    build: .  # Nuevamente, se construye desde el Dockerfile en el directorio actual.
     ports:
-      - "4001:4001"
-    environment:
-      - JWT_SECRET=supersecreto123
-      - PORT=4001
+      - "4001:4001"  # Mapea el puerto 4001 del contenedor al puerto 4001 del host.
+    environment:  # Variables de entorno.
+      - JWT_SECRET=supersecreto123  # La misma clave secreta que app1.
+      - PORT=4001  # Este servicio correrá en el puerto 4001 dentro del contenedor.
 
+  # Tercer servicio: app3
   app3:
-    build: .
+    build: .  # Construcción de la imagen desde el Dockerfile en el directorio actual.
     ports:
-      - "4002:4002"
-    environment:
-      - JWT_SECRET=supersecreto123
-      - PORT=4002
+      - "4002:4002"  # Mapea el puerto 4002 del contenedor al puerto 4002 del host.
+    environment:  # Variables de entorno.
+      - JWT_SECRET=supersecreto123  # Misma clave secreta para JWT.
+      - PORT=4002  # El servicio corre en el puerto 4002 dentro del contenedor.
 
+  # Servicio de Nginx para gestionar las aplicaciones
   nginx:
-    image: nginx:latest
+    image: nginx:latest  # Usa la imagen más reciente de Nginx desde el repositorio oficial de Docker Hub.
     ports:
-      - "80:80"  # NGINX escuchará en el puerto 80
+      - "80:80"  # Mapea el puerto 80 del contenedor al puerto 80 del host. Las solicitudes HTTP llegarán por este puerto.
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf  # Mapear correctamente el archivo nginx.conf
-    depends_on:
+      - ./nginx.conf:/etc/nginx/nginx.conf  # Monta el archivo de configuración de Nginx desde el directorio local al contenedor.
+    depends_on:  # Define que Nginx depende de las tres aplicaciones (app1, app2, app3).
       - app1
       - app2
-      - app3
+      - app3  # Esto asegura que Nginx solo inicie después de que las aplicaciones estén corriendo.
