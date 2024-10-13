@@ -28,12 +28,12 @@
         document.getElementById('transfer-form').addEventListener('submit', function (event) {
             event.preventDefault(); // Evita que el formulario se envíe de la manera tradicional
 
-            const monto = document.getElementById('monto').value;
-            const cuentaDestino = document.getElementById('cuentaDestino').value;
+            const monto = document.getElementById('monto').value;//detecta el monto para transferri 
+            const cuentaDestino = document.getElementById('cuentaDestino').value;//propietario a la cual se le transfiere 
             const otp = document.getElementById('otp').value; // Obtiene el OTP ingresado por el usuario
 
             const token = localStorage.getItem('token'); // Almacena el JWT en el Local Storage después de hacer login
-
+              //hace el llamado la metodo post de app.js en transferir 
             fetch('/transferir', {
                 method: 'POST',
                 headers: {
@@ -46,6 +46,7 @@
                     otp: otp, // Enviar OTP al backend
                 })
             })
+            //mensaje de que se podo realizar la tranzaccion 
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -54,6 +55,7 @@
                         alert('Error: ' + data.message);
                     }
                 })
+                //mensaje de que no se pudo realizar la transaccion 
                 .catch((error) => {
                     console.error('Error:', error);
                     alert('Hubo un error al realizar la transferencia.');
